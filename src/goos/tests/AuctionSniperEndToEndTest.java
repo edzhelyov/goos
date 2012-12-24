@@ -1,7 +1,9 @@
 package goos.tests;
 
-import static org.junit.Assert.*;
+import goos.ApplicationRunner;
+import goos.FakeAuctionServer;
 
+import org.junit.After;
 import org.junit.Test;
 
 public class AuctionSniperEndToEndTest {
