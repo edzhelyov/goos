@@ -56,6 +56,9 @@ public class Main implements AuctionEventListener {
 			}
 		});
 	}
+	
+	public void currentPrice(int price, int increment) {
+	}
 
 	private static String auctionId(String itemId, XMPPConnection connection) {
 		return String.format(AUCTION_ID_FORMAT, itemId, connection.getServiceName());
