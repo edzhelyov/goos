@@ -9,5 +9,7 @@
 	<classpathentry kind="lib" path="lib/hamcrest-core-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/hamcrest-library-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/junit-dep-4.6.jar"/>
+	<classpathentry kind="lib" path="lib/jmock-2.6-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/jmock-junit4-2.6-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
