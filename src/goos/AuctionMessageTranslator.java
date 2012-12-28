@@ -1,6 +1,7 @@
 package goos;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
@@ -15,24 +16,46 @@ public class AuctionMessageTranslator implements MessageListener {
 	
 	@Override
 	public void processMessage(Chat aChat, Message message) {
-		HashMap<String, String> event = unpackEventFrom(message);
+		AuctionEvent event = AuctionEvent.from(message.getBody());
 		
-		String type = event.get("Event");
-		if ("CLOSE".equals(type)) {
+		String eventType = event.type();
+		if ("CLOSE".equals(eventType)) {
 			listener.auctionClosed();
-		} else if ("PRICE".equals(type)) {
-			listener.currentPrice(Integer.parseInt(event.get("CurrentPrice")),
-								  Integer.parseInt(event.get("Increment")));
+		} else if ("PRICE".equals(eventType)) {
+			listener.currentPrice(event.currentPrice(), event.increment());
 		}
 	}
 	
-	private HashMap<String, String> unpackEventFrom(Message message) {
-		HashMap<String, String> event = new HashMap<String, String>();
+	private static class AuctionEvent {
+		private final Map<String, String> fields = new HashMap<String, String>();
+		public String type() { return get("Event"); }
+		public int currentPrice() { return getInt("CurrentPrice"); }
+		public int increment() { return getInt("Increment"); }
 		
-		for (String element : message.getBody().split(";")) {
-			String[] pair = element.split(":");
-			event.put(pair[0].trim(), pair[1].trim());
+		private int getInt(String fieldName) {
+			return Integer.parseInt(get(fieldName));
 		}
-		return event;
+		
+		private String get(String fieldName) {
+			return fields.get(fieldName);
+		}
+		
+		private void addField(String field) {
+			String[] pair = field.split(":");
+			
+			fields.put(pair[0].trim(), pair[1].trim());
+		}
+		
+		static AuctionEvent from(String messageBody) {
+			AuctionEvent event = new AuctionEvent();
+			for (String field : fieldsIn(messageBody)) {
+				event.addField(field);
+			}
+			return event;
+		}
+		
+		static String[] fieldsIn(String messageBody) {
+			return messageBody.split(";");
+		}
 	}
 }
