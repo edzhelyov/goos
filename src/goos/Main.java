@@ -21,10 +21,7 @@ public class Main implements SniperListener {
 
 	public static final String AUCTION_RESOURCE = "Auction";
 	public static final String ITEM_ID_AS_LOGIN = "auction-%s";
-	private static final String AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;
-
-	public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;";
-	public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
+	private static final String AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;	
 
 	private Chat notToBeGCd;
 
@@ -39,24 +36,16 @@ public class Main implements SniperListener {
 		  args[ARG_ITEM_ID]);
 	}
 
-	private void joinAuction(XMPPConnection connection, String itemId) throws XMPPException {
+	private void joinAuction(XMPPConnection connection, String itemId) {
 		disconnectWhenUICloses(connection);
 
 		final Chat chat = connection.getChatManager().createChat(auctionId(itemId, connection), null);				
 		this.notToBeGCd = chat;
 		
-		Auction auction = new Auction() {
-			public void bid(int amount) {
-				try {
-					chat.sendMessage(String.format(BID_COMMAND_FORMAT, amount));
-				} catch (XMPPException e) {
-					e.printStackTrace();
-				}
-			}
-		};
+		Auction auction = new XMPPAuction(chat);
 		
 		chat.addMessageListener(new AuctionMessageTranslator(new AuctionSniper(auction, this)));
-		chat.sendMessage(JOIN_COMMAND_FORMAT);
+		auction.join();
 	}
 
 	public void sniperLost() {

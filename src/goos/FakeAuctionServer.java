@@ -63,12 +63,12 @@ public class FakeAuctionServer {
 	
 	public void hasReceivedJoinRequestFromSniper(String sniperId) throws InterruptedException {
 		receivesAMessageMatching(sniperId,
-				 				 equalTo(Main.JOIN_COMMAND_FORMAT));
+				 				 equalTo(XMPPAuction.JOIN_COMMAND_FORMAT));
 	}
 
 	public void hasReceivedBid(int bid, String sniperId) throws InterruptedException {
 		receivesAMessageMatching(sniperId,
-								 equalTo(String.format(Main.BID_COMMAND_FORMAT, bid)));
+								 equalTo(String.format(XMPPAuction.BID_COMMAND_FORMAT, bid)));
 	}
 
 	public String getItemId() {
