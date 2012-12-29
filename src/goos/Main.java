@@ -6,10 +6,8 @@ import java.awt.event.WindowEvent;
 import javax.swing.SwingUtilities;
 
 import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Message;
 
 public class Main {
 	private MainWindow ui;
@@ -45,6 +43,7 @@ public class Main {
 		Auction auction = new XMPPAuction(chat);
 		
 		chat.addMessageListener(new AuctionMessageTranslator(
+				connection.getUser(),
 				new AuctionSniper(auction, new SniperStateDisplayer())));
 		auction.join();
 	}
@@ -85,6 +84,14 @@ public class Main {
 
 		public void sniperBidding() {
 			showStatus(MainWindow.STATUS_BIDDING);
+		}
+
+		public void sniperWinning() {
+			showStatus(MainWindow.STATUS_WINNING);
+		}
+		
+		public void sniperWon() {
+			showStatus(MainWindow.STATUS_WON);
 		}
 		
 		private void showStatus(final String status) {
