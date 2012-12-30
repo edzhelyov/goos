@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="lib/junit-dep-4.6.jar"/>
 	<classpathentry kind="lib" path="lib/jmock-2.6-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/jmock-junit4-2.6-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
