@@ -34,7 +34,7 @@ public class AuctionSniper implements AuctionEventListener {
 		case FromOtherBidder:
 			int bid = price + increment;
 			auction.bid(bid);
-			listener.sniperBidding(new SniperState(itemId, price, bid));
+			listener.sniperBidding(new SniperSnapshot(itemId, price, bid));
 			break;
 		}
 	}

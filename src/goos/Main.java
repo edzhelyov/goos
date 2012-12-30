@@ -82,7 +82,7 @@ public class Main {
 			showStatus(MainWindow.STATUS_LOST);
 		}
 
-		public void sniperBidding(final SniperState state) {
+		public void sniperBidding(final SniperSnapshot state) {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {

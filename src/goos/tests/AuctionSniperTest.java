@@ -4,7 +4,7 @@ import goos.Auction;
 import goos.AuctionEventListener.PriceSource;
 import goos.AuctionSniper;
 import goos.SniperListener;
-import goos.SniperState;
+import goos.SniperSnapshot;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -35,7 +35,7 @@ public class AuctionSniperTest {
 	public void reportsLostIfAuctionClosesWhenBidding() {
 		context.checking(new Expectations() {{
 			ignoring(auction);
-			allowing(sniperListener).sniperBidding(with(any(SniperState.class)));
+			allowing(sniperListener).sniperBidding(with(any(SniperSnapshot.class)));
 				then(sniperState.is("bidding"));
 			atLeast(1).of(sniperListener).sniperLost();
 				when(sniperState.is("bidding"));
@@ -54,7 +54,7 @@ public class AuctionSniperTest {
 		context.checking(new Expectations() {{
 			one(auction).bid(price + increment);
 			atLeast(1).of(sniperListener).sniperBidding(
-					new SniperState(ITEM_ID, price, bid));
+					new SniperSnapshot(ITEM_ID, price, bid));
 		}});
 		
 		sniper.currentPrice(price, increment, PriceSource.FromOtherBidder);
