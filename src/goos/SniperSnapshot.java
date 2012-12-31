@@ -29,6 +29,10 @@ public class SniperSnapshot {
 		return new SniperSnapshot(itemId, newLastPrice, newLastPrice, SniperState.WINNING);
 	}
 	
+	public SniperSnapshot closed() {
+		return new SniperSnapshot(itemId, lastPrice, lastBid, state.whenAuctionClosed());
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		return EqualsBuilder.reflectionEquals(this, obj);

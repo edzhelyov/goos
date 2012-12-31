@@ -27,10 +27,6 @@ public class MainWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
-
-	public void showStatus(String status) {
-		snipers.setStatusText(status);
-	}
 	
 	public void sniperStatusChanged(SniperSnapshot sniperState) {
 		snipers.sniperStatusChanged(sniperState);

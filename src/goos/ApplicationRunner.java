@@ -36,7 +36,7 @@ public class ApplicationRunner {
 		driver.showsSniperStatus(itemId, winningBid, winningBid, MainWindow.STATUS_WINNING);
 	}
 
-	public void showsSniperHasLostAuction(String itemId, int lastPrice, int lastBid) {
+	public void showsSniperHasLostAuction(int lastPrice, int lastBid) {
 		driver.showsSniperStatus(itemId, lastPrice, lastBid, MainWindow.STATUS_LOST);
 	}
 
