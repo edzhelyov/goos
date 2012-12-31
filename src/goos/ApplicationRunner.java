@@ -2,6 +2,12 @@ package goos;
 
 import static goos.FakeAuctionServer.XMPP_HOSTNAME;
 import static goos.Main.AUCTION_RESOURCE;
+import static goos.SniperState.JOINING;
+import static goos.SniperState.BIDDING;
+import static goos.SniperState.WINNING;
+import static goos.SniperState.LOST;
+import static goos.SniperState.WON;
+
 
 public class ApplicationRunner {
 	public static final String SNIPER_ID = "sniper";
@@ -25,23 +31,23 @@ public class ApplicationRunner {
 		thread.setDaemon(true);
 		thread.start();
 		driver = new AuctionSniperDriver(1000);
-		driver.showsSniperStatus("", 0, 0, MainWindow.STATUS_JOINING);
+		driver.showsSniperStatus("", 0, 0, SnipersTableModel.textFor(JOINING));
 	}
 
 	public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
-		driver.showsSniperStatus(itemId, lastPrice, lastBid, MainWindow.STATUS_BIDDING);
+		driver.showsSniperStatus(itemId, lastPrice, lastBid, SnipersTableModel.textFor(BIDDING));
 	}
 
 	public void hasShownSniperIsWinning(int winningBid) {
-		driver.showsSniperStatus(itemId, winningBid, winningBid, MainWindow.STATUS_WINNING);
+		driver.showsSniperStatus(itemId, winningBid, winningBid, SnipersTableModel.textFor(WINNING));
 	}
 
 	public void showsSniperHasLostAuction(int lastPrice, int lastBid) {
-		driver.showsSniperStatus(itemId, lastPrice, lastBid, MainWindow.STATUS_LOST);
+		driver.showsSniperStatus(itemId, lastPrice, lastBid, SnipersTableModel.textFor(LOST));
 	}
 
 	public void showsSniperHasWonAuction(int lastPrice) {
-		driver.showsSniperStatus(itemId, lastPrice, lastPrice, MainWindow.STATUS_WON);		
+		driver.showsSniperStatus(itemId, lastPrice, lastPrice, SnipersTableModel.textFor(WON));		
 	}
 	
 	public void stop() {

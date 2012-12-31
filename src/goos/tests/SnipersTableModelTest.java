@@ -1,6 +1,5 @@
 package goos.tests;
 
-import goos.MainWindow;
 import goos.SniperSnapshot;
 import goos.SniperState;
 import goos.SnipersTableModel;
@@ -49,7 +48,7 @@ public class SnipersTableModelTest {
 		assertColumnEquals(Column.ITEM_IDENTIFIER, "item id");
 		assertColumnEquals(Column.LAST_PRICE, 555);
 		assertColumnEquals(Column.LAST_BID, 666);
-		assertColumnEquals(Column.SNIPER_STATUS, MainWindow.STATUS_BIDDING);
+		assertColumnEquals(Column.SNIPER_STATUS, SnipersTableModel.textFor(SniperState.BIDDING));
 	}
 	
 	private void assertColumnEquals(Column column, Object expected) {

@@ -4,15 +4,10 @@ import javax.swing.table.AbstractTableModel;
 
 public class SnipersTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1247198670811592368L;
-	private static String[] STATUS_TEXT = { 
-		MainWindow.STATUS_JOINING,
-		MainWindow.STATUS_BIDDING,
-		MainWindow.STATUS_WINNING,
-		MainWindow.STATUS_LOST,
-		MainWindow.STATUS_WON
+	private static String[] STATUS_TEXT = {
+		"Joining", "Bidding", "Winning", "Lost", "Won" 
 	};
 	private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0, SniperState.JOINING);
-	private String statusText = MainWindow.STATUS_JOINING;
 	private SniperSnapshot sniperState = STARTING_UP;
 
 	public int getColumnCount() {
@@ -32,7 +27,7 @@ public class SnipersTableModel extends AbstractTableModel {
 		case LAST_BID:
 			return sniperState.lastBid;
 		case SNIPER_STATUS:
-			return statusText;
+			return textFor(sniperState.state);
 		default:
 			throw new IllegalArgumentException("No column at " + columnIndex);
 		}
@@ -40,7 +35,10 @@ public class SnipersTableModel extends AbstractTableModel {
 
 	public void sniperStatusChanged(SniperSnapshot newSniperState) {
 		sniperState = newSniperState;
-		statusText = STATUS_TEXT[newSniperState.state.ordinal()];
 		fireTableRowsUpdated(0, 0);
+	}
+	
+	public static String textFor(SniperState state) {
+		return STATUS_TEXT[state.ordinal()];
 	}
 }
