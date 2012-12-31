@@ -8,7 +8,7 @@ public class SnipersTableModel extends AbstractTableModel {
 		"Joining", "Bidding", "Winning", "Lost", "Won" 
 	};
 	private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0, SniperState.JOINING);
-	private SniperSnapshot sniperState = STARTING_UP;
+	private SniperSnapshot snapshot = STARTING_UP;
 
 	public int getColumnCount() {
 		return Column.values().length;
@@ -19,22 +19,11 @@ public class SnipersTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		switch (Column.at(columnIndex)) {
-		case ITEM_IDENTIFIER:
-			return sniperState.itemId;
-		case LAST_PRICE:
-			return sniperState.lastPrice;
-		case LAST_BID:
-			return sniperState.lastBid;
-		case SNIPER_STATUS:
-			return textFor(sniperState.state);
-		default:
-			throw new IllegalArgumentException("No column at " + columnIndex);
-		}
+		return Column.at(columnIndex).valueIn(snapshot);
 	}
 
 	public void sniperStatusChanged(SniperSnapshot newSniperState) {
-		sniperState = newSniperState;
+		snapshot = newSniperState;
 		fireTableRowsUpdated(0, 0);
 	}
 	
