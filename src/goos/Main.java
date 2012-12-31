@@ -82,19 +82,6 @@ public class Main {
 			showStatus(MainWindow.STATUS_LOST);
 		}
 
-		public void sniperBidding(final SniperSnapshot state) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					ui.sniperStatusChanged(state, MainWindow.STATUS_BIDDING);
-				}
-			});
-		}
-
-		public void sniperWinning() {
-			showStatus(MainWindow.STATUS_WINNING);
-		}
-		
 		public void sniperWon() {
 			showStatus(MainWindow.STATUS_WON);
 		}
@@ -104,6 +91,16 @@ public class Main {
 				@Override
 				public void run() {
 					ui.showStatus(status);
+				}
+			});
+		}
+
+		@Override
+		public void sniperStateChanged(final SniperSnapshot sniperSnapshot) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					ui.sniperStatusChanged(sniperSnapshot);
 				}
 			});
 		}

@@ -4,7 +4,12 @@ import javax.swing.table.AbstractTableModel;
 
 public class SnipersTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1247198670811592368L;
-	private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0);
+	private static String[] STATUS_TEXT = { 
+		MainWindow.STATUS_JOINING,
+		MainWindow.STATUS_BIDDING,
+		MainWindow.STATUS_WINNING
+	};
+	private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0, SniperState.JOINING);
 	private String statusText = MainWindow.STATUS_JOINING;
 	private SniperSnapshot sniperState = STARTING_UP;
 
@@ -32,14 +37,13 @@ public class SnipersTableModel extends AbstractTableModel {
 	}
 
 	public void setStatusText(String newStatusText) {
-		sniperState = STARTING_UP;
 		statusText = newStatusText;
 		fireTableRowsUpdated(0, 0);
 	}
 
-	public void sniperStatusChanged(SniperSnapshot newSniperState, String newStatusText) {
+	public void sniperStatusChanged(SniperSnapshot newSniperState) {
 		sniperState = newSniperState;
-		statusText = newStatusText;
+		statusText = STATUS_TEXT[newSniperState.state.ordinal()];
 		fireTableRowsUpdated(0, 0);
 	}
 }

@@ -3,15 +3,15 @@ package goos;
 import goos.AuctionEventListener;
 
 public class AuctionSniper implements AuctionEventListener {
-	private final String itemId;
 	private final Auction auction;
 	private final SniperListener listener;
 	private boolean isWinning = false;
+	private SniperSnapshot snapshot;
 	
 	public AuctionSniper(String itemId, Auction auction, SniperListener listener) {
 		this.auction = auction;
 		this.listener = listener;
-		this.itemId = itemId;
+		this.snapshot = SniperSnapshot.joining(itemId);
 	}
 
 	@Override
@@ -27,15 +27,14 @@ public class AuctionSniper implements AuctionEventListener {
 	public void currentPrice(int price, int increment, PriceSource priceSource) {
 		isWinning = (priceSource == PriceSource.FromSniper);
 		
-		switch (priceSource) {
-		case FromSniper:
-			listener.sniperWinning();
-			break;
-		case FromOtherBidder:
+		if (isWinning) {
+			snapshot = snapshot.winning(price);
+		} else {
 			int bid = price + increment;
 			auction.bid(bid);
-			listener.sniperBidding(new SniperSnapshot(itemId, price, bid));
-			break;
+			snapshot = snapshot.bidding(price, bid);
 		}
+		
+		listener.sniperStateChanged(snapshot);
 	}
 }

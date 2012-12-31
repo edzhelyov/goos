@@ -32,8 +32,8 @@ public class MainWindow extends JFrame {
 		snipers.setStatusText(status);
 	}
 	
-	public void sniperStatusChanged(SniperSnapshot sniperState, String statusText) {
-		snipers.sniperStatusChanged(sniperState, statusText);
+	public void sniperStatusChanged(SniperSnapshot sniperState) {
+		snipers.sniperStatusChanged(sniperState);
 	}
 
 	private void fillContentPane(JTable snipersTable) {
