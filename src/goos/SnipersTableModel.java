@@ -2,7 +2,7 @@ package goos;
 
 import javax.swing.table.AbstractTableModel;
 
-public class SnipersTableModel extends AbstractTableModel {
+public class SnipersTableModel extends AbstractTableModel implements SniperListener {
 	private static final long serialVersionUID = 1247198670811592368L;
 	private static String[] STATUS_TEXT = {
 		"Joining", "Bidding", "Winning", "Lost", "Won" 
@@ -22,7 +22,7 @@ public class SnipersTableModel extends AbstractTableModel {
 		return Column.at(columnIndex).valueIn(snapshot);
 	}
 
-	public void sniperStatusChanged(SniperSnapshot newSniperState) {
+	public void sniperStateChanged(SniperSnapshot newSniperState) {
 		snapshot = newSniperState;
 		fireTableRowsUpdated(0, 0);
 	}
