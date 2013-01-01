@@ -15,7 +15,7 @@ public class ColumnTest {
 		assertEquals("item id", Column.ITEM_IDENTIFIER.valueIn(snapshot));
 		assertEquals(123, Column.LAST_PRICE.valueIn(snapshot));
 		assertEquals(145, Column.LAST_BID.valueIn(snapshot));
-		assertEquals("Bidding", Column.SNIPER_STATUS.valueIn(snapshot));
+		assertEquals("Bidding", Column.SNIPER_STATE.valueIn(snapshot));
 	}
 	
 }
