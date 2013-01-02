@@ -4,9 +4,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
+
 
 import org.hamcrest.Matcher;
 import org.jivesoftware.smack.Chat;
@@ -89,8 +89,7 @@ public class FakeAuctionServer {
 		
 		public void receivesAMessage(Matcher <? super String> messageMatcher) throws InterruptedException {
 			final Message message = messages.poll(5, TimeUnit.SECONDS);
-			assertThat("Message", message, is(notNullValue()));
-			assertThat(message.getBody(), messageMatcher);
+			assertThat(message, hasProperty("body", messageMatcher));
 		}
 	}
 }
