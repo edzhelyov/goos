@@ -8,6 +8,7 @@ import org.junit.Test;
 
 public class AuctionSniperEndToEndTest {
 	private final FakeAuctionServer auction = new FakeAuctionServer("item-54321");
+	private final FakeAuctionServer auction2 = new FakeAuctionServer("item-65432");
 	private final ApplicationRunner application = new ApplicationRunner();
 	
 	@Test
@@ -49,6 +50,14 @@ public class AuctionSniperEndToEndTest {
 		
 		auction.announceClosed();
 		application.showsSniperHasWonAuction(auction, 1098);
+	}
+	
+	@Test
+	public void sniperBidsForMultipleItems() throws Exception {
+		auction.startSellingItem();
+		auction2.startSellingItem();
+		
+		
 	}
 	
 	@After
