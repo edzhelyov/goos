@@ -1,6 +1,5 @@
 package goos;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static java.lang.String.valueOf;
 
 import javax.swing.table.JTableHeader;

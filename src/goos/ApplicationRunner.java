@@ -14,7 +14,6 @@ public class ApplicationRunner {
 	public static final String SNIPER_PASSWORD = "sniper";
 	public static final String SNIPER_XMPP_ID = SNIPER_ID + "@" + XMPP_HOSTNAME + "/" + AUCTION_RESOURCE;
 	private AuctionSniperDriver driver;
-	private String itemId;
 	
 	public void startBiddingIn(final FakeAuctionServer... auctions) {
 		Thread thread = new Thread("Test Application") {
@@ -33,7 +32,7 @@ public class ApplicationRunner {
 		driver.hasColumnTitles();
 		
 		for (FakeAuctionServer auction : auctions) {
-			driver.showsSniperStatus("", 0, 0, SnipersTableModel.textFor(JOINING));
+			driver.showsSniperStatus(auction.getItemId(), 0, 0, SnipersTableModel.textFor(JOINING));
 		}
 	}
 

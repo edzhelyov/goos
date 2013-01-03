@@ -1,7 +1,6 @@
 package goos.tests;
 
 import goos.SniperSnapshot;
-import goos.SniperState;
 import goos.SnipersTableModel;
 import goos.Column;
 
@@ -39,16 +38,18 @@ public class SnipersTableModelTest {
 	
 	@Test
 	public void setsSniperValuesInColumns() {
+		SniperSnapshot joining = SniperSnapshot.joining("item id");
+		SniperSnapshot bidding = joining.bidding(123, 100);
 		context.checking(new Expectations() {{
-			one(listener).tableChanged(with(aRowChangedEvent()));
+			allowing(listener).tableChanged(with(anInsertionAtRow(0)));
+			
+			one(listener).tableChanged(with(aRowChangedEvent(0)));
 		}});
 		
-		model.sniperStateChanged(new SniperSnapshot("item id", 555, 666, SniperState.BIDDING));
+		model.addSniper(joining);
+		model.sniperStateChanged(bidding);
 		
-		assertColumnEquals(Column.ITEM_IDENTIFIER, "item id");
-		assertColumnEquals(Column.LAST_PRICE, 555);
-		assertColumnEquals(Column.LAST_BID, 666);
-		assertColumnEquals(Column.SNIPER_STATE, SnipersTableModel.textFor(SniperState.BIDDING));
+		assertRowMatchesSnapshot(0, bidding);
 	}
 	
 	@Test
@@ -58,13 +59,50 @@ public class SnipersTableModelTest {
 		}
 	}
 	
-	private void assertColumnEquals(Column column, Object expected) {
-		final int rowIndex = 0;
-		final int columnIndex = column.ordinal();
-		assertEquals(expected, model.getValueAt(rowIndex, columnIndex));
+	@Test
+	public void notifiesListenersWhenAddingASniper() {
+		SniperSnapshot joining = SniperSnapshot.joining("item-54321");
+		context.checking(new Expectations() {{
+			one(listener).tableChanged(with(anInsertionAtRow(0)));
+		}});
+		
+		assertEquals(0, model.getRowCount());
+		
+		model.addSniper(joining);
+		
+		assertEquals(1, model.getRowCount());
+		assertRowMatchesSnapshot(0, joining);
 	}
 	
-	private Matcher<TableModelEvent> aRowChangedEvent() {
-		return samePropertyValuesAs(new TableModelEvent(model, 0));
+	@Test
+	public void holdsSnipersInAdditionOrder() {
+		context.checking(new Expectations() {{
+			ignoring(listener);
+		}});
+		
+		model.addSniper(SniperSnapshot.joining("item 0"));
+		model.addSniper(SniperSnapshot.joining("item 1"));
+		
+		assertEquals("item 0", cellValue(0, Column.ITEM_IDENTIFIER));
+		assertEquals("item 1", cellValue(1, Column.ITEM_IDENTIFIER));
+	}
+	
+	private void assertRowMatchesSnapshot(int row, SniperSnapshot snapshot) {
+		assertEquals(snapshot.itemId, cellValue(row, Column.ITEM_IDENTIFIER));
+	    assertEquals(snapshot.lastPrice, cellValue(row, Column.LAST_PRICE));
+	    assertEquals(snapshot.lastBid, cellValue(row, Column.LAST_BID));
+	    assertEquals(SnipersTableModel.textFor(snapshot.state), cellValue(row, Column.SNIPER_STATE));
+	}
+	
+	private Object cellValue(int rowIndex, Column column) {
+	    return model.getValueAt(rowIndex, column.ordinal());
+	}
+	
+	private Matcher<TableModelEvent> aRowChangedEvent(int row) {
+		return samePropertyValuesAs(new TableModelEvent(model, row));
+	}
+	
+	private  Matcher<TableModelEvent> anInsertionAtRow(final int row) {
+		return samePropertyValuesAs(new TableModelEvent(model, row, row, TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT));
 	}
 }

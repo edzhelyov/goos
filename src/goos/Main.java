@@ -16,7 +16,6 @@ public class Main {
 	private static final int ARG_HOSTNAME = 0;
 	private static final int ARG_USERNAME = 1;
 	private static final int ARG_PASSWORD = 2;
-	private static final int ARG_ITEM_ID  = 3;
 
 	public static final String AUCTION_RESOURCE = "Auction";
 	public static final String ITEM_ID_AS_LOGIN = "auction-%s";
@@ -39,10 +38,11 @@ public class Main {
 		}
 	}
 
-	private void joinAuction(XMPPConnection connection, String itemId) {
+	private void joinAuction(XMPPConnection connection, String itemId) throws Exception {
 		final Chat chat = connection.getChatManager().createChat(auctionId(itemId, connection), null);				
 		this.notToBeGCd.add(chat);
 		
+		safetyAddItemToModel(itemId);
 		Auction auction = new XMPPAuction(chat);
 		
 		chat.addMessageListener(new AuctionMessageTranslator(
@@ -76,6 +76,15 @@ public class Main {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				connection.disconnect();
+			}
+		});
+	}
+	
+	private void safetyAddItemToModel(final String itemId) throws Exception {
+		SwingUtilities.invokeAndWait(new Runnable() {
+			@Override
+			public void run() {
+				snipers.addSniper(SniperSnapshot.joining(itemId));
 			}
 		});
 	}
