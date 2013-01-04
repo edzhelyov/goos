@@ -1,7 +1,7 @@
 package goos;
 
 import static goos.FakeAuctionServer.XMPP_HOSTNAME;
-import static goos.Main.AUCTION_RESOURCE;
+import static goos.XMPPAuctionHouse.AUCTION_RESOURCE;
 import static goos.SniperState.JOINING;
 import static goos.SniperState.BIDDING;
 import static goos.SniperState.WINNING;
