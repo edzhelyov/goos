@@ -2,7 +2,6 @@ package goos;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
@@ -14,7 +13,6 @@ public class Main {
 	private static final int ARG_PASSWORD = 2;
 
 	private final SnipersTableModel snipers = new SnipersTableModel();
-	private ArrayList<Auction> notToBeGCd = new ArrayList<Auction>();
 
 	public Main() throws Exception {
 		startUserInterface();
@@ -29,17 +27,7 @@ public class Main {
 	}
 
 	private void addUserRequestListenerFor(final XMPPAuctionHouse auctionHouse) {
-		ui.addUserRequestListener(new UserRequestListener() {
-			@Override
-			public void joinAuction(String itemId) {
-				snipers.addSniper(SniperSnapshot.joining(itemId));
-				
-				Auction auction = auctionHouse.auctionFor(itemId);
-				notToBeGCd.add(auction);
-				auction.addAuctionEventListener(new AuctionSniper(itemId, auction, new SwingThreadSniperListener()));
-				auction.join();
-			}
-		});
+		ui.addUserRequestListener(new SniperLauncher(snipers, auctionHouse));
 	}
 
 	private void startUserInterface() throws Exception {
@@ -57,17 +45,5 @@ public class Main {
 				auctionHouse.disconnect();
 			}
 		});
-	}
-	
-	public class SwingThreadSniperListener implements SniperListener {
-		@Override
-		public void sniperStateChanged(final SniperSnapshot sniperSnapshot) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					snipers.sniperStateChanged(sniperSnapshot);
-				}
-			});
-		}
 	}
 }
