@@ -1,5 +1,6 @@
 package goos.tests;
 
+import goos.AuctionSniper;
 import goos.SniperSnapshot;
 import goos.SnipersTableModel;
 import goos.Column;
@@ -24,6 +25,7 @@ import org.junit.runner.RunWith;
 public class SnipersTableModelTest {
 	private final Mockery context = new Mockery();
 	private TableModelListener listener = context.mock(TableModelListener.class);
+	private AuctionSniper sniper = new AuctionSniper("item id", null);
 	private final SnipersTableModel model = new SnipersTableModel();
 	
 	@Before
@@ -38,15 +40,14 @@ public class SnipersTableModelTest {
 	
 	@Test
 	public void setsSniperValuesInColumns() {
-		SniperSnapshot joining = SniperSnapshot.joining("item id");
-		SniperSnapshot bidding = joining.bidding(123, 100);
+		SniperSnapshot bidding = sniper.getSnapshot().bidding(123, 100);
 		context.checking(new Expectations() {{
 			allowing(listener).tableChanged(with(anInsertionAtRow(0)));
 			
 			one(listener).tableChanged(with(aRowChangedEvent(0)));
 		}});
 		
-		model.addSniper(joining);
+		model.addSniper(sniper);
 		model.sniperStateChanged(bidding);
 		
 		assertRowMatchesSnapshot(0, bidding);
@@ -61,17 +62,16 @@ public class SnipersTableModelTest {
 	
 	@Test
 	public void notifiesListenersWhenAddingASniper() {
-		SniperSnapshot joining = SniperSnapshot.joining("item-54321");
 		context.checking(new Expectations() {{
 			one(listener).tableChanged(with(anInsertionAtRow(0)));
 		}});
 		
 		assertEquals(0, model.getRowCount());
 		
-		model.addSniper(joining);
+		model.addSniper(sniper);
 		
 		assertEquals(1, model.getRowCount());
-		assertRowMatchesSnapshot(0, joining);
+		assertRowMatchesSnapshot(0, sniper.getSnapshot());
 	}
 	
 	@Test
@@ -80,8 +80,8 @@ public class SnipersTableModelTest {
 			ignoring(listener);
 		}});
 		
-		model.addSniper(SniperSnapshot.joining("item 0"));
-		model.addSniper(SniperSnapshot.joining("item 1"));
+		model.addSniper(new AuctionSniper("item 0", null));
+		model.addSniper(new AuctionSniper("item 1", null));
 		
 		assertEquals("item 0", cellValue(0, Column.ITEM_IDENTIFIER));
 		assertEquals("item 1", cellValue(1, Column.ITEM_IDENTIFIER));
