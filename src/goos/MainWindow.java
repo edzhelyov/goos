@@ -24,9 +24,10 @@ public class MainWindow extends JFrame {
 	private SnipersTableModel snipers;
 	private final Announcer<UserRequestListener> userRequests = Announcer.to(UserRequestListener.class);
 
-	public MainWindow(SnipersTableModel snipers) {
+	public MainWindow(SniperPortfolio portfolio) {
 		super(APPLICATION_TITLE);
-		this.snipers = snipers;
+		snipers = new SnipersTableModel();
+		portfolio.addPortfolioListener(snipers);
 		
 		setName(MAIN_WINDOW_NAME);
 		fillContentPane(makeSnipersTable(), makeControls());

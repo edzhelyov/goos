@@ -6,13 +6,12 @@ import javax.swing.table.AbstractTableModel;
 
 import com.objogate.exception.Defect;
 
-public class SnipersTableModel extends AbstractTableModel implements SniperListener, SniperCollector {
+public class SnipersTableModel extends AbstractTableModel implements SniperListener, PortfolioListener {
 	private static final long serialVersionUID = 1247198670811592368L;
 	private static String[] STATUS_TEXT = {
 		"Joining", "Bidding", "Winning", "Lost", "Won" 
 	};
 	private ArrayList<SniperSnapshot> snapshots = new ArrayList<SniperSnapshot>();
-	private ArrayList<AuctionSniper> notToBeGCd = new ArrayList<AuctionSniper>();
 
 	public int getColumnCount() {
 		return Column.values().length;
@@ -48,8 +47,7 @@ public class SnipersTableModel extends AbstractTableModel implements SniperListe
 	}
 
 	@Override
-	public void addSniper(AuctionSniper sniper) {
-		notToBeGCd.add(sniper);
+	public void sniperAdded(AuctionSniper sniper) {
 		addSniperSnapshot(sniper.getSnapshot());
 		sniper.addSniperListener(new SwingThreadSniperListener(this));
 	}

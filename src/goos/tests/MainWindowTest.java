@@ -7,12 +7,12 @@ import static org.hamcrest.Matchers.equalTo;
 
 import goos.AuctionSniperDriver;
 import goos.MainWindow;
-import goos.SnipersTableModel;
+import goos.SniperPortfolio;
 import goos.UserRequestListener;
 
 public class MainWindowTest {
-	private final SnipersTableModel tableModel = new SnipersTableModel();
-	private final MainWindow mainWindow = new MainWindow(tableModel);
+	private final SniperPortfolio portfolio = new SniperPortfolio();
+	private final MainWindow mainWindow = new MainWindow(portfolio);
 	private final AuctionSniperDriver driver = new AuctionSniperDriver(100);
 	
 	@Test
