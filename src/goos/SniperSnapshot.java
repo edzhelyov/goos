@@ -28,6 +28,10 @@ public class SniperSnapshot {
 	public SniperSnapshot winning(int newLastPrice) {
 		return new SniperSnapshot(itemId, newLastPrice, newLastPrice, SniperState.WINNING);
 	}
+
+	public SniperSnapshot losing(int newLastPrice) {
+		return new SniperSnapshot(itemId, newLastPrice, lastBid, SniperState.LOSING);
+	}
 	
 	public SniperSnapshot closed() {
 		return new SniperSnapshot(itemId, lastPrice, lastBid, state.whenAuctionClosed());

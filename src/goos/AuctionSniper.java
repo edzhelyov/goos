@@ -4,10 +4,12 @@ import goos.AuctionEventListener;
 
 public class AuctionSniper implements AuctionEventListener {
 	private final Auction auction;
+	private Item item;
 	private SniperListener listener;
 	private SniperSnapshot snapshot;
 	
 	public AuctionSniper(Item item, Auction auction) {
+		this.item = item;
 		this.auction = auction;
 		this.snapshot = SniperSnapshot.joining(item.identifier);
 	}
@@ -30,8 +32,12 @@ public class AuctionSniper implements AuctionEventListener {
 			break;
 		case FromOtherBidder:
 			int bid = price + increment;
-			auction.bid(bid);
-			snapshot = snapshot.bidding(price, bid);
+			if (item.allowsBid(bid)) {
+				auction.bid(bid);
+				snapshot = snapshot.bidding(price, bid);
+			} else {
+				snapshot = snapshot.losing(price);
+			}
 			break;
 		}
 		notifyChange();
