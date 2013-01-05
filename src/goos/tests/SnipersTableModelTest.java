@@ -1,6 +1,7 @@
 package goos.tests;
 
 import goos.AuctionSniper;
+import goos.Item;
 import goos.SniperSnapshot;
 import goos.SnipersTableModel;
 import goos.Column;
@@ -25,7 +26,7 @@ import org.junit.runner.RunWith;
 public class SnipersTableModelTest {
 	private final Mockery context = new Mockery();
 	private TableModelListener listener = context.mock(TableModelListener.class);
-	private AuctionSniper sniper = new AuctionSniper("item id", null);
+	private AuctionSniper sniper = new AuctionSniper(new Item("item id", 567), null);
 	private final SnipersTableModel model = new SnipersTableModel();
 	
 	@Before
@@ -80,8 +81,8 @@ public class SnipersTableModelTest {
 			ignoring(listener);
 		}});
 		
-		model.sniperAdded(new AuctionSniper("item 0", null));
-		model.sniperAdded(new AuctionSniper("item 1", null));
+		model.sniperAdded(new AuctionSniper(new Item("item 0", 567), null));
+		model.sniperAdded(new AuctionSniper(new Item("item 1", 567), null));
 		
 		assertEquals("item 0", cellValue(0, Column.ITEM_IDENTIFIER));
 		assertEquals("item 1", cellValue(1, Column.ITEM_IDENTIFIER));

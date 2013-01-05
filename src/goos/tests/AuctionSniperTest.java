@@ -3,6 +3,7 @@ package goos.tests;
 import goos.Auction;
 import goos.AuctionEventListener.PriceSource;
 import goos.AuctionSniper;
+import goos.Item;
 import goos.SniperListener;
 import goos.SniperSnapshot;
 import goos.SniperState;
@@ -23,9 +24,10 @@ import org.junit.runner.RunWith;
 public class AuctionSniperTest {
 	private final Mockery context = new Mockery();
 	private final String ITEM_ID = "item-id"; 
+	private final Item item = new Item(ITEM_ID, 567);
 	private final SniperListener sniperListener = context.mock(SniperListener.class);
 	private final Auction auction = context.mock(Auction.class);
-	private final AuctionSniper sniper = new AuctionSniper(ITEM_ID, auction);
+	private final AuctionSniper sniper = new AuctionSniper(item, auction);
 	private final States sniperState = context.states("sniper");
 	
 	@Before

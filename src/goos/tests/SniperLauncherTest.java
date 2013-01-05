@@ -3,6 +3,7 @@ package goos.tests;
 import goos.Auction;
 import goos.AuctionHouse;
 import goos.AuctionSniper;
+import goos.Item;
 import goos.SniperCollector;
 import goos.SniperLauncher;
 
@@ -26,23 +27,23 @@ public class SniperLauncherTest {
 
 	@Test
 	public void addsNewSniperToCollectorAndThenJoinsAuction() {
-		final String itemId = "item 123";
+		final Item item = new Item("item 123", 789);
 		context.checking(new Expectations() {{
-			allowing(auctionHouse).auctionFor(itemId);
+			allowing(auctionHouse).auctionFor(item);
 				will(returnValue(auction));
-			oneOf(auction).addAuctionEventListener(with(sniperForItem(itemId)));
+			oneOf(auction).addAuctionEventListener(with(sniperForItem(item)));
 				when(auctionState.is("not joined"));
-			oneOf(collector).addSniper(with(sniperForItem(itemId)));
+			oneOf(collector).addSniper(with(sniperForItem(item)));
 				when(auctionState.is("not joined"));
 			one(auction).join();
 				then(auctionState.is("joined"));
 		}});
 		
-		launcher.joinAuction(itemId);
+		launcher.joinAuction(item);
 	}
 	
-	protected Matcher<AuctionSniper>sniperForItem(String itemId) {
-		return new FeatureMatcher<AuctionSniper, String>(equalTo(itemId), "sniper with item id", "item") {
+	protected Matcher<AuctionSniper>sniperForItem(Item item) {
+		return new FeatureMatcher<AuctionSniper, String>(equalTo(item.identifier), "sniper with item id", "item") {
 			@Override protected String featureValueOf(AuctionSniper actual) {
 				return actual.getSnapshot().itemId;
 			}
