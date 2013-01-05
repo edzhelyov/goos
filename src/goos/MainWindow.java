@@ -5,8 +5,10 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -21,6 +23,7 @@ public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	public static final String NEW_ITEM_ID_NAME = "new item id";
 	public static final String JOIN_BUTTON_NAME = "Join auction";
+	public static final String NEW_ITEM_STOP_PRICE_NAME = "stop price";
 	private SnipersTableModel snipers;
 	private final Announcer<UserRequestListener> userRequests = Announcer.to(UserRequestListener.class);
 
@@ -56,6 +59,11 @@ public class MainWindow extends JFrame {
 		itemIdField.setColumns(25);
 		itemIdField.setName(NEW_ITEM_ID_NAME);
 		controls.add(itemIdField);
+		
+		final JFormattedTextField stopPriceField = new JFormattedTextField(NumberFormat.getIntegerInstance());
+		stopPriceField.setColumns(7);
+		stopPriceField.setName(NEW_ITEM_STOP_PRICE_NAME);
+		controls.add(stopPriceField);
 		
 		JButton joinAuctionButton = new JButton("Join Auction");
 		joinAuctionButton.setName(JOIN_BUTTON_NAME);

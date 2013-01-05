@@ -5,6 +5,7 @@ import static goos.XMPPAuctionHouse.AUCTION_RESOURCE;
 import static goos.SniperState.JOINING;
 import static goos.SniperState.BIDDING;
 import static goos.SniperState.WINNING;
+import static goos.SniperState.LOSING;
 import static goos.SniperState.LOST;
 import static goos.SniperState.WON;
 
@@ -18,10 +19,13 @@ public class ApplicationRunner {
 	public void startBiddingIn(final FakeAuctionServer... auctions) {
 		startSniper();
 		for (FakeAuctionServer auction : auctions) {
-			final String itemId = auction.getItemId();
-			driver.startBiddingFor(itemId);
-			driver.showsSniperStatus(itemId, 0, 0, SnipersTableModel.textFor(JOINING));
+			bidForItem(auction.getItemId(), Integer.MAX_VALUE);
 		}
+	}
+	
+	public void startBiddingWithStopPrice(FakeAuctionServer auction, int stopPrice) {
+		startSniper();
+		bidForItem(auction.getItemId(), stopPrice);
 	}
 
 	public void hasShownSniperIsBidding(FakeAuctionServer auction, int lastPrice, int lastBid) {
@@ -30,6 +34,10 @@ public class ApplicationRunner {
 
 	public void hasShownSniperIsWinning(FakeAuctionServer auction, int winningBid) {
 		driver.showsSniperStatus(auction.getItemId(), winningBid, winningBid, SnipersTableModel.textFor(WINNING));
+	}
+	
+	public void hasShownSniperIsLosing(FakeAuctionServer auction, int lastPrice, int lastBid) {
+		driver.showsSniperStatus(auction.getItemId(), lastPrice, lastBid, SnipersTableModel.textFor(LOSING));
 	}
 
 	public void showsSniperHasLostAuction(FakeAuctionServer auction, int lastPrice, int lastBid) {
@@ -61,5 +69,10 @@ public class ApplicationRunner {
 		driver = new AuctionSniperDriver(1000);
 		driver.hasTitle(MainWindow.APPLICATION_TITLE);
 		driver.hasColumnTitles();
+	}
+	
+	private void bidForItem(String itemId, int stopPrice) {
+		driver.startBiddingFor(itemId, stopPrice);
+		driver.showsSniperStatus(itemId, 0, 0, SnipersTableModel.textFor(JOINING));
 	}
 }
