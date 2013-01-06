@@ -62,9 +62,9 @@ public class AuctionSniperTest {
 	
 	@Test
 	public void reportsIsWinningWhenCurrentPriceComesFromSniper() {
+		ignoringAuction();
 		allowingSniperBidding();
 		context.checking(new Expectations() {{
-			ignoring(auction);
 			atLeast(1).of(sniperListener).sniperStateChanged(new SniperSnapshot(ITEM_ID, 123, 123, SniperState.WINNING));
 				when(sniperState.is("bidding"));
 		}});
@@ -129,9 +129,9 @@ public class AuctionSniperTest {
 	
 	@Test
 	public void reportsWonIfAuctionClosesWhenWinning() {
+		ignoringAuction();
 		allowingSniperWinning();
 		context.checking(new Expectations() {{
-			ignoring(auction);
 			atLeast(1).of(sniperListener).sniperStateChanged(with(aSniperThatIs(SniperState.WON)));
 				when(sniperState.is("winning"));
 		}});
@@ -142,9 +142,9 @@ public class AuctionSniperTest {
 	
 	@Test
 	public void reportsLostIfAuctionClosesWhenBidding() {
+		ignoringAuction();
 		allowingSniperBidding();
 		context.checking(new Expectations() {{
-			ignoring(auction);
 			atLeast(1).of(sniperListener).sniperStateChanged(with(aSniperThatIs(SniperState.LOST)));
 				when(sniperState.is("bidding"));
 		}});
@@ -165,6 +165,23 @@ public class AuctionSniperTest {
 		sniper.auctionClosed();
 	}
 	
+	@Test
+	public void reportsFailedIfAuctionFailsWhenBidding() {
+		ignoringAuction();
+		allowingSniperBidding();
+		
+		expectSniperToFailWhenItIs("bidding");
+		
+		sniper.currentPrice(123, 45, PriceSource.FromOtherBidder);
+		sniper.auctionFailed();
+	}
+	
+	private void ignoringAuction() {
+		context.checking(new Expectations() {{
+			ignoring(auction);
+		}});
+	}
+	
 	private void allowingSniperLosing() {
 		allowingSniperStateChange(SniperState.LOSING, "losing");
 	}
@@ -181,6 +198,13 @@ public class AuctionSniperTest {
 		context.checking(new Expectations() {{
 			allowing(sniperListener).sniperStateChanged(with(aSniperThatIs(newState)));
 				then(sniperState.is(stateName));
+		}});
+	}
+	
+	private void expectSniperToFailWhenItIs(final String state) {
+		context.checking(new Expectations() {{
+			atLeast(1).of(sniperListener).sniperStateChanged(new SniperSnapshot(ITEM_ID, 0, 0, SniperState.FAILED));
+				when(sniperState.is(state));
 		}});
 	}
 	

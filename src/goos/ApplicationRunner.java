@@ -8,6 +8,7 @@ import static goos.SniperState.WINNING;
 import static goos.SniperState.LOSING;
 import static goos.SniperState.LOST;
 import static goos.SniperState.WON;
+import static goos.SniperState.FAILED;
 
 
 public class ApplicationRunner {
@@ -46,6 +47,15 @@ public class ApplicationRunner {
 
 	public void showsSniperHasWonAuction(FakeAuctionServer auction, int lastPrice) {
 		driver.showsSniperStatus(auction.getItemId(), lastPrice, lastPrice, SnipersTableModel.textFor(WON));		
+	}
+	
+	public void showsSniperHasFailed(FakeAuctionServer auction) {
+		driver.showsSniperStatus(auction.getItemId(), 0, 0, SnipersTableModel.textFor(FAILED));		
+	}
+	
+	public void reportsInvalidMessage(FakeAuctionServer auction, String brokenMessage) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	public void stop() {

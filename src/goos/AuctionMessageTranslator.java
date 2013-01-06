@@ -20,7 +20,15 @@ public class AuctionMessageTranslator implements MessageListener {
 	
 	@Override
 	public void processMessage(Chat aChat, Message message) {
-		AuctionEvent event = AuctionEvent.from(message.getBody());
+		try {
+			translate(message.getBody());
+		} catch (Exception parseException) {
+			listener.auctionFailed();
+		}
+	}
+	
+	private void translate(String messageBody) throws Exception {
+		AuctionEvent event = AuctionEvent.from(messageBody);
 		
 		String eventType = event.type();
 		if ("CLOSE".equals(eventType)) {
@@ -32,11 +40,11 @@ public class AuctionMessageTranslator implements MessageListener {
 	
 	private static class AuctionEvent {
 		private final Map<String, String> fields = new HashMap<String, String>();
-		public String type() { return get("Event"); }
-		public int currentPrice() { return getInt("CurrentPrice"); }
-		public int increment() { return getInt("Increment"); }
+		public String type() throws MissingValueException { return get("Event"); }
+		public int currentPrice() throws Exception { return getInt("CurrentPrice"); }
+		public int increment() throws Exception { return getInt("Increment"); }
 		
-		public PriceSource isFrom(String sniperId) {
+		public PriceSource isFrom(String sniperId) throws MissingValueException {
 			if (sniperId.equals(bidder())) {
 				return PriceSource.FromSniper;
 			} else {
@@ -44,14 +52,18 @@ public class AuctionMessageTranslator implements MessageListener {
 			}
 		}
 		
-		private String bidder() { return get("Bidder"); }
+		private String bidder() throws MissingValueException { return get("Bidder"); }
 		
-		private int getInt(String fieldName) {
+		private int getInt(String fieldName) throws Exception {
 			return Integer.parseInt(get(fieldName));
 		}
 		
-		private String get(String fieldName) {
-			return fields.get(fieldName);
+		private String get(String fieldName) throws MissingValueException {
+			String value = fields.get(fieldName);
+			if (value == null) {
+				throw new MissingValueException(fieldName);
+			}
+			return value;
 		}
 		
 		private void addField(String field) {
@@ -70,6 +82,14 @@ public class AuctionMessageTranslator implements MessageListener {
 		
 		static String[] fieldsIn(String messageBody) {
 			return messageBody.split(";");
+		}
+		
+		private static class MissingValueException extends Exception {
+			private static final long serialVersionUID = 5388441007380966868L;
+
+			public MissingValueException(String fieldName) {
+				super("Missing value for " + fieldName);
+			}	
 		}
 	}
 }

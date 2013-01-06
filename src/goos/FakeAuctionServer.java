@@ -56,9 +56,9 @@ public class FakeAuctionServer {
 	public void announceClosed() throws XMPPException {
 		currentChat.sendMessage("SOLVersion: 1.1; Event: CLOSE;");
 	}
-	
-	public void stop() {
-		connection.disconnect();
+
+	public void sendInvalidMessageContaining(String brokenMessage) throws XMPPException {
+		currentChat.sendMessage(brokenMessage);		
 	}
 	
 	public void hasReceivedJoinRequestFromSniper(String sniperId) throws InterruptedException {
@@ -71,6 +71,10 @@ public class FakeAuctionServer {
 								 equalTo(String.format(XMPPAuction.BID_COMMAND_FORMAT, bid)));
 	}
 
+	public void stop() {
+		connection.disconnect();
+	}
+	
 	public String getItemId() {
 		return itemId;
 	}

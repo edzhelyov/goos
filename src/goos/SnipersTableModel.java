@@ -9,7 +9,7 @@ import com.objogate.exception.Defect;
 public class SnipersTableModel extends AbstractTableModel implements SniperListener, PortfolioListener {
 	private static final long serialVersionUID = 1247198670811592368L;
 	private static String[] STATUS_TEXT = {
-		"Joining", "Bidding", "Winning", "Losing", "Lost", "Won" 
+		"Joining", "Bidding", "Winning", "Losing", "Lost", "Won", "Failed"
 	};
 	private ArrayList<SniperSnapshot> snapshots = new ArrayList<SniperSnapshot>();
 
