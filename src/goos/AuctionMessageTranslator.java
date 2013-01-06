@@ -11,18 +11,22 @@ import org.jivesoftware.smack.packet.Message;
 
 public class AuctionMessageTranslator implements MessageListener {
 	private AuctionEventListener listener;
+	private XMPPFailureReporter failureReporter;
 	private final String sniperId;
 	
-	public AuctionMessageTranslator(String sniperId, AuctionEventListener listener) {
+	public AuctionMessageTranslator(String sniperId, AuctionEventListener listener, XMPPFailureReporter failureReporter) {
 		this.sniperId = sniperId;
 		this.listener = listener;
+		this.failureReporter = failureReporter;
 	}
 	
 	@Override
 	public void processMessage(Chat aChat, Message message) {
+		String messageBody = message.getBody();
 		try {
-			translate(message.getBody());
+			translate(messageBody);
 		} catch (Exception parseException) {
+			failureReporter.cannotTranslateMessage(sniperId, messageBody, parseException);
 			listener.auctionFailed();
 		}
 	}

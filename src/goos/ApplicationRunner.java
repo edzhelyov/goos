@@ -10,12 +10,18 @@ import static goos.SniperState.LOST;
 import static goos.SniperState.WON;
 import static goos.SniperState.FAILED;
 
+import java.io.IOException;
+
+import static org.hamcrest.Matchers.containsString;
+import goos.tests.AuctionLogDriver;
+
 
 public class ApplicationRunner {
 	public static final String SNIPER_ID = "sniper";
 	public static final String SNIPER_PASSWORD = "sniper";
 	public static final String SNIPER_XMPP_ID = SNIPER_ID + "@" + XMPP_HOSTNAME + "/" + AUCTION_RESOURCE;
 	private AuctionSniperDriver driver;
+	private AuctionLogDriver logDriver = new AuctionLogDriver();
 	
 	public void startBiddingIn(final FakeAuctionServer... auctions) {
 		startSniper();
@@ -53,18 +59,20 @@ public class ApplicationRunner {
 		driver.showsSniperStatus(auction.getItemId(), 0, 0, SnipersTableModel.textFor(FAILED));		
 	}
 	
-	public void reportsInvalidMessage(FakeAuctionServer auction, String brokenMessage) {
-		// TODO Auto-generated method stub
-		
+	public void reportsInvalidMessage(FakeAuctionServer auction, String brokenMessage) throws IOException {
+		logDriver.hasEntry(containsString(brokenMessage));		
 	}
 	
 	public void stop() {
+		logDriver.clearLog();
 		if (driver != null) {
 			driver.dispose();
 		}
 	}
 	
 	private void startSniper() {
+		logDriver.clearLog();
+		
 		Thread thread = new Thread("Test Application") {
 			@Override public void run() {
 				try {
